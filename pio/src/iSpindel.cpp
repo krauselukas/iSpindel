@@ -166,7 +166,7 @@ bool readConfig()
           if (json.containsKey("Job"))
             strcpy(my_job, json["Job"]);
           if (json.containsKey("Instance"))
-            strcpy(my_instance, json["Instance"]);            
+            strcpy(my_instance, json["Instance"]);
           if (json.containsKey("Vfact"))
             my_vfact = json["Vfact"];
           if (json.containsKey("TS"))
@@ -521,6 +521,21 @@ bool uploadData(uint8_t service)
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling Ubidots"));
     return sender.sendUbidots(my_token, my_name);
+  }
+#endif
+
+#ifdef API_BREWHUB
+  if (service == DTBrewhub)
+  {
+    sender.add("name", my_name);
+    sender.add("tilt", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN(F("\ncalling Brewhub"));
+    return sender.sendBrewhub(my_token, my_server, my_port);
   }
 #endif
 

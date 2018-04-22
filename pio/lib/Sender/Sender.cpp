@@ -152,7 +152,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
 bool SenderClass::sendPrometheus(String server, uint16_t port, String job, String instance)
 {
     HTTPClient http;
-    
+
     // the path looks like /metrics/job/<JOBNAME>[/instance/<INSTANCENAME>]
     String uri = "/metrics/job/";
     uri += job;
@@ -218,6 +218,50 @@ bool SenderClass::sendUbidots(String token, String name)
         msg += "?token=";
         msg += token;
         msg += F(" HTTP/1.1\r\nHost: things.ubidots.com\r\nUser-Agent: ESP8266\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
+        msg += _jsonVariant.measureLength();
+        msg += "\r\n";
+
+        _client.println(msg);
+        CONSOLELN(msg);
+
+        _jsonVariant.printTo(_client);
+        _client.println();
+        CONSOLELN(msg);
+    }
+    else
+    {
+        CONSOLELN(F("\nERROR Sender: couldnt connect"));
+    }
+
+    int timeout = 0;
+    while (!_client.available() && timeout < CONNTIMEOUT)
+    {
+        timeout++;
+        delay(1);
+    }
+    while (_client.available())
+    {
+        char c = _client.read();
+        Serial.write(c);
+    }
+    // currentValue = 0;
+    _client.stop();
+    delay(100); // allow gracefull session close
+    return true;
+}
+
+bool SenderClass::sendBrewhub(String token, String server, uint16_t port)
+{
+    _jsonVariant.printTo(Serial);
+
+    if (_client.connect(server.c_str(), port))
+    {
+        CONSOLELN(F("Sender: Brewhub posting"));
+
+        String msg = F("POST /v1/ispindels");
+        msg += "?token=";
+        msg += token;
+        msg += F(" HTTP/1.1\r\nHost: brewhub\r\nUser-Agent: ESP8266\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
         msg += _jsonVariant.measureLength();
         msg += "\r\n";
 

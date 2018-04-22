@@ -61,6 +61,15 @@ case "Ubidots":
   set('job',0);
   set('instance',0);
   break;
+case "Brewhub":
+  set('token',1);
+  set('server',1);
+  set('url',0);
+  set('port',1);
+  set('db', 0);
+  set('job',0);
+  set('instance',0);
+  break;
 case "CraftBeerPi":
   set('url',0);
   set('port',0);
@@ -153,6 +162,7 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <option value=7>iSpindel.de</option>
 <option value=8>InfluxDB</option>
 <option value=9>Prometheus</option>
+<option value=10>Brewhub</option>
 </select>)V0G0N";
 
 const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
