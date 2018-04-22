@@ -21,6 +21,7 @@ public:
   bool sendInfluxDB(String server, uint16_t port, String db, String name);
   bool sendPrometheus(String server, uint16_t port, String job, String instance);
   bool sendUbidots(String token, String name);
+  bool sendBrewhub(String token, String server, uint16_t port);
   bool sendFHEM(String server, uint16_t port, String name);
   bool sendTCONTROL(String server, uint16_t port);
   void add(String id, float value);
